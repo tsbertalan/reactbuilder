@@ -1,9 +1,12 @@
 import os, tempfile, shutil, subprocess
+import hashlib
 from typing import Union
+
 
 def put_in_tempdir(react_dir: str, prev_tempdir: Union[str, None]=None, delete_existing: bool=True) -> str:
     """Given a react_dir (contains package.json), copy to a temporary dir for building."""
-    src_hash = hash(os.path.dirname(react_dir))
+    
+    src_hash = hashlib.md5(os.path.dirname(react_dir).encode()).hexdigest()  # consistent-length temp dir
     if prev_tempdir or prev_tempdir is None:
         # TODO: Use config for this.
         if prev_tempdir is None:
@@ -37,16 +40,35 @@ def put_in_tempdir(react_dir: str, prev_tempdir: Union[str, None]=None, delete_e
     return temp_dir
 
 
+def get_npm_path_winps():
+    # Run the PowerShell command and capture the output
+    output = subprocess.check_output(
+        'C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe -Command "Get-Command npm | Select-Object -ExpandProperty Source"',
+        shell=True
+    )
+    # Decode the output from bytes to string and strip any extra whitespace
+    npm_path = output.decode().strip()
+    return npm_path
+
+
 def build_site(temp_dir: str) -> str:
     """Build the site in the temp dir."""
     os.chdir(temp_dir)
-    install_result = subprocess.run(['npm', 'install'])
+    try:
+        install_result = subprocess.run(['npm', 'install'])
+    except FileNotFoundError:
+        npmpath = get_npm_path_winps()
+        install_result = subprocess.run([npmpath, 'install'])
     if install_result.returncode != 0:
         raise Exception('npm install failed')
     else:
         print('npm install successful')
     
-    build_result = subprocess.run(['npm', 'run', 'build'])
+    try:
+        build_result = subprocess.run(['npm', 'run', 'build'])
+    except FileNotFoundError:
+        npmpath = get_npm_path_winps()
+        build_result = subprocess.run([npmpath, 'run', 'build'])
     if build_result.returncode != 0:
         raise Exception('npm run build failed')
     else:
