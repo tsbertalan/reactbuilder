@@ -51,18 +51,19 @@ def get_npm_path_winps():
     return npm_path
 
 
-def build_site(temp_dir: str) -> str:
+def build_site(temp_dir: str, do_install: bool=True) -> str:
     """Build the site in the temp dir."""
     os.chdir(temp_dir)
-    try:
-        install_result = subprocess.run(['npm', 'install'])
-    except FileNotFoundError:
-        npmpath = get_npm_path_winps()
-        install_result = subprocess.run([npmpath, 'install'])
-    if install_result.returncode != 0:
-        raise Exception('npm install failed')
-    else:
-        print('npm install successful')
+    if do_install:
+        try:
+            install_result = subprocess.run(['npm', 'install'])
+        except FileNotFoundError:
+            npmpath = get_npm_path_winps()
+            install_result = subprocess.run([npmpath, 'install'])
+        if install_result.returncode != 0:
+            raise Exception('npm install failed')
+        else:
+            print('npm install successful')
     
     try:
         build_result = subprocess.run(['npm', 'run', 'build'])

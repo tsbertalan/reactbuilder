@@ -3,16 +3,15 @@ from reactbuilder import put_in_tempdir, build_site, collect_artifacts
 
 def main():
 	parser = argparse.ArgumentParser()
-	# parser.add_argument(
-	# 	'react_dir',
-	# 	type=str,
-	# 	help='Directory containing package.json'
-	# )
 	parser.add_argument(
-		'--react_dir',
-		default='C:\\Users\\tsbertalan\\Dropbox\\Projects\\Nakya\\src\\nakya\\frontend\\js',
+		'react_dir',
 		type=str,
 		help='Directory containing package.json'
+	)
+	parser.add_argument(
+		'--skip_install',
+		action='store_true',
+		help='Skip the npm install step for speed.'
 	)
 	parser.add_argument(
 		'--temp_dir', type=str, default=None,
@@ -44,7 +43,7 @@ def main():
 	)
 	print(f"temp_dir: {args.temp_dir}")
 
-	build_result = build_site(args.temp_dir)
+	build_result = build_site(args.temp_dir, do_install=not args.skip_install)
 	print(f"build_result: {build_result}")
 
 	collected_dest = collect_artifacts(args.temp_dir, args.build_parent)
