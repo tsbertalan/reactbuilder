@@ -77,6 +77,7 @@ def build_site(temp_dir: str, do_install: bool=True) -> str:
 
     return build_result
 
+
 def collect_artifacts(temp_dir: str, build_parent: str) -> str:
     # Copy the build folder back to here.
     build_dir = os.path.join(temp_dir, 'build')

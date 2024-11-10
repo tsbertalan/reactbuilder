@@ -1,7 +1,7 @@
 import argparse, os
 from reactbuilder import put_in_tempdir, build_site, collect_artifacts
 
-def main():
+def main(argv=None):
 	parser = argparse.ArgumentParser()
 	parser.add_argument(
 		'react_dir',
@@ -28,7 +28,12 @@ def main():
 		action='store_true',
 		help='Whether we should delete existing package-lock.json and node_modules under the temp dir.',
 	)
-	args = parser.parse_args()
+
+	if argv is not None:
+		args = parser.parse_args(argv)
+	else:
+		args = parser.parse_args()
+		
 	if args.build_parent is None:
 		args.build_parent = args.react_dir
 
