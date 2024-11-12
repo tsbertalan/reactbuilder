@@ -1,0 +1,29 @@
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "reactbuilder"
+version = "0.1.1"
+description = "Some scripts to make React setup and building OUTSIDE OF YOUR LOCAL WORKSPACE easier."
+authors = [
+    { name = "Tom Bertalan", email = "reactbuilder@tombertalan.com" }
+]
+readme = "README.md"
+requires-python = ">=3.6"
+license = { text = "MIT License" }
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent"
+]
+urls = { "Homepage" = "https://github.com/tsbertalan/reactbuilder" }
+
+[project.optional-dependencies]
+# Add optional dependencies here
+
+[project.scripts]
+reactbuild = "reactbuilder.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
